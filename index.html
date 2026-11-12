@@ -106,6 +106,31 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border:0;border-radiu
 .ly{height:min(78vh,720px)}
 .main-pad{display:none}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.addbox{padding:16px;border-radius:30px;margin-bottom:24px}
+.addbox .r{display:flex;gap:10px}
+.addbox .search{margin:0;flex:1;min-width:0}
+.addbox small{display:block;color:var(--tx2);margin-top:10px}
+.btn{padding:14px 20px;border-radius:20px;font-weight:700;color:#fff;--h:262;flex:none;background:linear-gradient(145deg,hsl(var(--h) 88% 74%),hsl(calc(var(--h) + 38) 82% 60%));box-shadow:4px 6px 14px var(--sh),inset 3px 3px 6px rgba(255,255,255,.5),inset -4px -5px 9px rgba(0,0,0,.17)}
+.btn:disabled{opacity:.5}
+.btn.ghost{background:rgba(127,127,160,.2);box-shadow:none;color:var(--tx)}
+.row .hrt svg{width:1em;height:1em}
+.slot{grid-area:c;justify-self:center;width:min(100%,300px);aspect-ratio:16/9;border-radius:18px}
+.np .edb{grid-area:x;justify-self:end;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-size:1.3rem;color:#fff}
+#pw{position:fixed;z-index:30;display:none;background:#000;border-radius:18px;overflow:hidden;box-shadow:0 14px 36px rgba(20,10,50,.4);transition:left .3s,top .3s,width .3s,height .3s}
+#pw iframe{width:100%;height:100%;border:0;display:block}
+.ly.plain p{opacity:.92;filter:none;transform:none;font-size:clamp(1.1rem,4.5vw,1.5rem);cursor:default;margin-bottom:12px}
+.ly .msg{padding:20px;text-align:center;opacity:.9;font:600 1.1rem/1.6 "DM Sans",sans-serif}
+.ly .msg .btn{margin-top:14px}
+.ed{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:16px;background:rgba(10,5,25,.6)}
+.ed[hidden]{display:none}
+.edc{width:min(100%,520px);max-height:92vh;overflow:auto;padding:20px;border-radius:28px;background:var(--card);color:var(--tx)}
+.edc label{display:block;font-weight:700;font-size:.9rem;color:var(--tx2)}
+.fld{display:block;width:100%;border:1px solid var(--gb);background:rgba(127,127,160,.12);color:var(--tx);border-radius:14px;padding:12px 14px;font:inherit;margin:6px 0 14px;resize:vertical}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:8px}
+#est{display:block;margin:10px 0 14px;color:var(--tx2);font-size:.9rem}
+.toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translate(-50%,-20px);opacity:0;z-index:100;padding:12px 18px;border-radius:20px;pointer-events:none;transition:.3s;max-width:90vw;text-align:center;background:var(--card);color:var(--tx);box-shadow:0 10px 30px rgba(20,10,50,.3)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (min-width:821px){.slot{width:min(100%,400px)}.np .edb{position:absolute;grid-area:auto;right:24px;top:calc(22px + env(safe-area-inset-top,0px))}}
 </style>
 </head>
 <body>
@@ -120,8 +145,11 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border:0;border-radiu
   <main>
     <header class="top"><h1 id="hi">Salom</h1><button class="gbtn glass" id="th" aria-label="Yorug’ yoki qorong’i rejim">◐</button></header>
     <section class="view on" id="v-home">
-      <div class="hero glass" id="hero"></div>
-      <h3>Hamma qo’shiqlar</h3>
+      <div class="addbox glass">
+        <div class="r"><input class="search glass" id="url" type="text" inputmode="url" placeholder="YouTube havolasini yopishtiring" aria-label="YouTube havolasi"><button class="btn" id="addb">Qo’shish</button></div>
+        <small>Qo’shiq nomi va ijrochisi bo’yicha sinxron lyrics avtomatik qidiriladi.</small>
+      </div>
+      <h3>Playlist</h3>
       <div class="grid" id="grid"></div>
     </section>
     <section class="view" id="v-search">
@@ -150,10 +178,11 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border:0;border-radiu
 
 <section class="np" id="np" aria-label="Hozir ijro etilmoqda">
   <button class="x" id="close" aria-label="Yopish"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <div class="cover clay" id="bc"></div>
+  <button class="edb" id="edb" aria-label="Lyrics va nomni tahrirlash">✎</button>
+  <div class="slot" id="slot"></div>
   <div class="tt"><h2 id="bt"></h2><p id="ba"></p></div>
   <div class="ly glass" id="ly" aria-live="off"></div>
-  <div class="sk"><input type="range" id="seek" min="0" max="48" step="0.1" value="0" aria-label="Vaqt"><div class="times"><span id="tc">0:00</span><span id="td">0:48</span></div></div>
+  <div class="sk"><input type="range" id="seek" min="0" max="1" step="0.1" value="0" aria-label="Vaqt"><div class="times"><span id="tc">0:00</span><span id="td">0:00</span></div></div>
   <div class="ct">
     <button class="hrt" id="bh" aria-label="Saqlash"></button>
     <button class="cbtn" id="pv" aria-label="Oldingi"></button>
@@ -162,77 +191,182 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border:0;border-radiu
   </div>
 </section>
 
+<div id="pw"><div id="ytp"></div></div>
+
+<div class="ed" id="ed" hidden>
+  <div class="edc">
+    <h3>Nom va lyrics</h3>
+    <label for="et">Qo’shiq nomi</label><input class="fld" id="et">
+    <label for="ea">Ijrochi</label><input class="fld" id="ea">
+    <button class="btn" id="efind">Avtomatik qidirish</button>
+    <span id="est"></span>
+    <label for="el">Matn (LRC yoki oddiy matn)</label>
+    <textarea class="fld" id="el" rows="8" placeholder="[00:12.00] Birinchi qator&#10;[00:18.50] Ikkinchi qator"></textarea>
+    <div class="acts"><button class="btn ghost" id="ecancel">Bekor</button><button class="btn" id="esave">Saqlash</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
 <script>
-const IC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',prev:'<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM20 6v12L9.5 12z"/></svg>',next:'<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM4 6l10.5 6L4 18z"/></svg>',heart:'<svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.3-9C1 8.5 3 5 6.5 5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3C21 5 23 8.5 21.3 12 19 16.4 12 21 12 21z"/></svg>'};
-const DUR=48;
-const T=[
-{t:'Tungi shahar',a:'Demo · Nur',e:'🌙',h:262,bpm:84,r:220,m:[0,3,7,12,7,3,7,3],p:[0,-4,-2,-7],L:['Shahar uxlaydi, men uxlamayman','Ko’chalarda chiroqlar raqsga tushadi','Yurak sekin, tun esa uzun','Yulduzlar menga yo’l ko’rsatadi','Orqada qolgan hamma tashvish','Oldinda faqat ochiq osmon','Ko’zimni yumaman va kuylayman','Tong keladi, men tayyorman']},
-{t:'Oltin quyosh',a:'Demo · Sado',e:'🔥',h:24,bpm:108,r:261.6,m:[0,4,7,12,7,4,7,4],p:[0,-3,-5,-8],L:['Quyosh ko’tarildi, qadam tezlashdi','Bugun hamma narsa mumkin','Qo’llaringni ko’tar, havoni tut','Kulgimiz tog’lardan oshadi','Orzu — yonib turgan chiroq','Uni hech kim o’chira olmaydi','Birga yuramiz, birga uchamiz','Bu kun bizniki']},
-{t:'Dengiz shivirlari',a:'Demo · To’lqin',e:'🌊',h:195,bpm:72,r:196,m:[0,3,7,10,12,10,7,3],p:[0,-2,-4,-5],L:['To’lqin qirg’oqqa shivirlaydi','Qum izlarimni yutib ketadi','Ufq uzoqda, lekin menga yaqin','Shamol ismimni aytib o’tadi','Chayqalgan qayiqdek yengilman','Chuqurlik meni qo’rqitmaydi','Sukunat ham go’zal kuy ekan','Dengiz hammasini eslab qoladi']},
-{t:'Gul fasli',a:'Demo · Bahor',e:'🌸',h:330,bpm:96,r:246.9,m:[0,4,7,11,12,11,7,4],p:[0,-5,-3,-7],L:['Bahor eshikni ochdi','Daraxtlar oq libos kiydi','Havo ham xushbo’y, ham yengil','Bolalar kulgusi ko’chada yuradi','Har novda yangi so’z yozadi','Biz esa shu so’zlarni o’qiymiz','Gullar so’nsa ham iliqlik qoladi','Yana kelasan, aziz fasl']}
-];
-T.forEach(t=>t.L=t.L.map((x,i)=>[2+i*6,x]));
+const IC={play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',pause:'<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',prev:'<svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM20 6v12L9.5 12z"/></svg>',next:'<svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM4 6l10.5 6L4 18z"/></svg>',heart:'<svg viewBox="0 0 24 24"><path d="M12 21s-7-4.6-9.3-9C1 8.5 3 5 6.5 5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3C21 5 23 8.5 21.3 12 19 16.4 12 21 12 21z"/></svg>',trash:'<svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h4v2H4V5h4zM6 9h12l-1 12H7z"/></svg>'};
 const $=id=>document.getElementById(id),root=document.documentElement;
-let cur=-1,pos=0,playing=false,last=0,lastStep=-1,timer,ctx,master,el,act=-1,liked=new Set();
+const KEY='yumshoq.v2';
+let tracks=[],liked=new Set(),cur=-1,pos=0,dur=0,playing=false,act=-1,dragging=false,lp=null;
+let yt=null,ytReady=false,pend=null;const busy=new Set();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
-const cov=(t,c)=>`<div class="cover ${c} clay" style="--h:${t.h}">${t.e}</div>`;
+const hue=id=>{let x=0;for(const c of id)x=(x*31+c.charCodeAt(0))%360;return x};
+const thumb=t=>`https://i.ytimg.com/vi/${t.id}/mqdefault.jpg`;
+const grad=h=>`linear-gradient(145deg,hsl(${h} 88% 74%),hsl(${h+38} 82% 60%))`;
+const covStyle=t=>`--h:${t.h};background-image:url(${thumb(t)}),${grad(t.h)};background-size:cover;background-position:center`;
+const cov=(t,c)=>`<div class="cover ${c} clay" style="${covStyle(t)}"></div>`;
+let tt;function toast(m){const e=$('toast');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),3500)}
 
-/* ---------- audio: demo melodiyalar brauzerning o’zida yaratiladi ---------- */
-function audio(){if(!ctx){const AC=window.AudioContext||window.webkitAudioContext;ctx=new AC();const f=ctx.createBiquadFilter();f.type='lowpass';f.frequency.value=2600;master=ctx.createGain();master.gain.value=.55;master.connect(f);let ok=false;try{if(ctx.createMediaStreamDestination){const d=ctx.createMediaStreamDestination();f.connect(d);el=new Audio();el.srcObject=d.stream;el.setAttribute('playsinline','');el.play().catch(()=>{f.connect(ctx.destination)});ok=true}}catch(e){}if(!ok)f.connect(ctx.destination)}if(ctx.state==='suspended')ctx.resume();if(el&&el.paused)el.play().catch(()=>{})}
-function note(fr,d,type,g){const n=ctx.currentTime,o=ctx.createOscillator(),v=ctx.createGain();o.type=type;o.frequency.value=fr;v.gain.setValueAtTime(0,n);v.gain.linearRampToValueAtTime(g,n+.02);v.gain.exponentialRampToValueAtTime(.0001,n+d);o.connect(v);v.connect(master);o.start(n);o.stop(n+d+.05)}
-function kick(){const n=ctx.currentTime,o=ctx.createOscillator(),v=ctx.createGain();o.frequency.setValueAtTime(140,n);o.frequency.exponentialRampToValueAtTime(42,n+.16);v.gain.setValueAtTime(.8,n);v.gain.exponentialRampToValueAtTime(.001,n+.22);o.connect(v);v.connect(master);o.start(n);o.stop(n+.25)}
-function step(n,t){const k=n%8,ch=t.p[(n>>3)%t.p.length],f=s=>t.r*Math.pow(2,(s+ch)/12);note(f(t.m[k]),.4,'triangle',.24);if(k%4===0){kick();note(f(0)/2,.7,'sine',.5)}if(k===3||k===7)note(f(t.m[k]+12),.25,'sine',.08)}
+/* ---------- saqlash (brauzer xotirasi) ---------- */
+function save(){try{localStorage.setItem(KEY,JSON.stringify({tracks,liked:[...liked]}))}catch(e){}}
+function restore(){try{const d=JSON.parse(localStorage.getItem(KEY)||'null');if(d){tracks=d.tracks||[];liked=new Set(d.liked||[])}}catch(e){}}
 
-/* ---------- pleyer ---------- */
-function load(i){cur=i;pos=0;lastStep=-1;act=-1;paint();play()}
-function play(){audio();playing=true;last=performance.now();clearInterval(timer);timer=setInterval(tick,30);icons()}
-function pause(){playing=false;clearInterval(timer);icons()}
-function toggle(){if(cur<0)load(0);else playing?pause():play()}
-function go(d){load((cur+d+T.length)%T.length)}
-function tick(){const now=performance.now();pos+=(now-last)/1000;last=now;if(pos>=DUR){go(1);return}
-const t=T[cur],s=Math.floor(pos*t.bpm/60*2);if(s!==lastStep){lastStep=s;step(s,t)}ui()}
-function ui(){const p=pos/DUR*100;$('mb').style.width=p+'%';$('seek').value=pos;$('tc').textContent=fmt(pos);
-const L=T[cur].L;let a=-1;L.forEach((l,i)=>{if(pos>=l[0])a=i});
-if(a!==act){act=a;const ps=$('ly').querySelectorAll('p');ps.forEach((p,i)=>p.classList.toggle('on',i===a));
-if(a>=0){const p=ps[a],c=$('ly');c.scrollTo({top:p.offsetTop-c.clientHeight/2+p.clientHeight/2,behavior:'smooth'})}}}
-function icons(){const ic=playing?IC.pause:IC.play;$('mp').innerHTML=ic;$('bp').innerHTML=ic;$('pv').innerHTML=IC.prev;$('nx').innerHTML=IC.next;
-const h=document.querySelector('#hero .pbtn');if(h)h.innerHTML=(playing&&cur===0)?IC.pause:IC.play;heart()}
-function heart(){$('bh').innerHTML=IC.heart;$('bh').classList.toggle('on',liked.has(cur))}
-function paint(){const t=T[cur];['mini','np'].forEach(k=>$(k).style.setProperty('--h',t.h));$('mini').classList.add('on');
-$('mc').style.setProperty('--h',t.h);$('mc').textContent=t.e;$('bc').style.setProperty('--h',t.h);$('bc').textContent=t.e;
-$('mt').textContent=$('bt').textContent=t.t;$('ma').textContent=$('ba').textContent=t.a;
-$('ly').innerHTML=t.L.map((l,i)=>`<p data-t="${l[0]}">${l[1]}</p>`).join('')+'<div class="pad"></div>';$('ly').scrollTop=0;
-$('mp').style.setProperty('--h',t.h);$('bp').style.setProperty('--h',t.h);
-document.querySelectorAll('.row').forEach(r=>r.classList.toggle('cur',+r.dataset.i===cur));ui()}
+/* ---------- havola va nomni tahlil qilish ---------- */
+function vid(s){s=s.trim();const m=s.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/|\/live\/)([\w-]{11})/);if(m)return m[1];return /^[\w-]{11}$/.test(s)?s:null}
+function guess(title,author){
+ let s=title.replace(/[\(\[][^\)\]]*[\)\]]/g,' ').replace(/\b(official|music video|lyric video|lyrics?|video|audio|hd|4k|mv|clip)\b/gi,' ').replace(/\s*[|｜].*$/,'').replace(/\s+/g,' ').trim();
+ let a=(author||'').replace(/\s*-\s*Topic$/i,'').replace(/VEVO$/i,'').trim(),t=s||title;
+ const m=s.split(/\s+[-–—]\s+/);
+ if(m.length>=2){a=m[0].trim();t=m.slice(1).join(' - ').trim()}
+ return{t,a}}
 
-/* ---------- ro’yxatlar ---------- */
-const row=i=>{const t=T[i];return `<div class="row glass${i===cur?' cur':''}" data-i="${i}" style="--h:${t.h}" tabindex="0">${cov(t,'sm')}<div class="meta"><b>${t.t}</b><small>${t.a}</small></div><button class="hrt${liked.has(i)?' on':''}" data-like="${i}" aria-label="Saqlash">${IC.heart}</button></div>`};
+/* ---------- LRCLIB ---------- */
+async function findLy(t,a,d){
+ const B='https://lrclib.net/api/',q=o=>new URLSearchParams(o);
+ const clean=t.replace(/\s*[\(\[]?\s*(feat\.?|ft\.?|prod\.?).*$/i,'').trim()||t;
+ const j=async u=>{const r=await fetch(u);if(!r.ok)throw 0;return r.json()};
+ let list=[];
+ try{list=await j(B+'search?'+q(a?{track_name:clean,artist_name:a}:{track_name:clean}))}catch(e){}
+ if(!list.length){try{list=await j(B+'search?'+q({q:(a+' '+clean).trim()}))}catch(e){}}
+ list=list.filter(x=>x.syncedLyrics||x.plainLyrics);
+ if(!list.length)return null;
+ if(d){const near=list.filter(x=>Math.abs(x.duration-d)<=3);if(near.length)list=near}
+ list.sort((x,y)=>(!!y.syncedLyrics-!!x.syncedLyrics)||(d?Math.abs(x.duration-d)-Math.abs(y.duration-d):0));
+ return list[0].syncedLyrics||list[0].plainLyrics}
+function parse(raw){
+ if(!raw||!raw.trim())return null;
+ const out=[],plain=[];let synced=false;
+ raw.split(/\r?\n/).forEach(line=>{
+  const re=/\[(\d+):(\d+(?:[.:]\d+)?)\]/g;let m;const ts=[];
+  while((m=re.exec(line)))ts.push(+m[1]*60+parseFloat(m[2].replace(':','.')));
+  const txt=line.replace(/\[[^\]]*\]/g,'').trim();
+  if(ts.length){synced=true;if(txt)ts.forEach(s=>out.push([s,txt]))}else if(txt)plain.push(txt)});
+ if(synced)return{synced:true,L:out.sort((a,b)=>a[0]-b[0])};
+ return plain.length?{synced:false,L:plain.map(x=>[0,x])}:null}
+async function fetchLy(t){
+ if(busy.has(t.id))return;busy.add(t.id);if(tracks[cur]===t)paintLy();
+ let r=null;try{r=await findLy(t.t,t.a,tracks[cur]===t?dur:0)}catch(e){}
+ busy.delete(t.id);
+ if(r){t.lrc=r;t.ls='ok'}else if(!t.lrc)t.ls='none';
+ save();if(tracks[cur]===t)paintLy()}
+
+/* ---------- YouTube pleyer ---------- */
+window.onYouTubeIframeAPIReady=()=>{yt=new YT.Player('ytp',{width:'100%',height:'100%',playerVars:{playsinline:1,rel:0,controls:0,modestbranding:1,fs:0,disablekb:1},events:{
+ onReady:()=>{ytReady=true;if(pend){yt.loadVideoById(pend);pend=null}},
+ onStateChange:e=>{const s=e.data;if(s===1)playing=true;else if(s===2||s===0)playing=false;icons();if(s===0&&tracks.length>1)go(1)},
+ onError:()=>{playing=false;icons();toast('Bu videoni bu yerda ijro etib bo’lmaydi (egasi taqiqlagan). Boshqasini tanlang.')}}})};
+const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';document.head.appendChild(s);
+setInterval(()=>{if(!ytReady||cur<0)return;try{pos=yt.getCurrentTime()||0;const d=yt.getDuration();if(d)dur=d}catch(e){}ui()},250);
+
+function place(){const w=$('pw');if(cur<0){w.style.display='none';return}w.style.display='block';
+ let l,t,W,H;
+ if($('np').classList.contains('on')){const r=$('slot').getBoundingClientRect();l=r.left;t=r.top;W=r.width;H=r.height;w.style.zIndex=60}
+ else{W=Math.min(200,innerWidth-32);H=W*9/16;const m=$('mini').getBoundingClientRect();l=innerWidth-W-16;t=m.top-H-10;w.style.zIndex=30}
+ Object.assign(w.style,{left:l+'px',top:t+'px',width:W+'px',height:H+'px'})}
+addEventListener('resize',place);
+$('np').addEventListener('transitionend',e=>{if(e.propertyName==='transform')place()});
+
+function load(i){cur=i;pos=0;dur=0;playing=false;const t=tracks[i];paint();place();
+ if(ytReady)yt.loadVideoById(t.id);else pend=t.id;
+ if(!t.lrc&&!t.ls&&!busy.has(t.id))fetchLy(t)}
+function toggle(){if(cur<0){if(tracks.length)load(0);return}if(!ytReady)return;playing?yt.pauseVideo():yt.playVideo()}
+function go(d){if(tracks.length)load((cur+d+tracks.length)%tracks.length)}
+
+/* ---------- interfeys ---------- */
+function ui(){
+ const d=dur||0;$('mb').style.width=(d?pos/d*100:0)+'%';
+ if(!dragging){$('seek').max=d||1;$('seek').value=pos;$('tc').textContent=fmt(pos)}
+ $('td').textContent=fmt(d);
+ if(lp&&lp.synced){let a=-1;lp.L.forEach((l,i)=>{if(pos>=l[0])a=i});
+  if(a!==act){act=a;const ps=$('ly').querySelectorAll('p');ps.forEach((p,i)=>p.classList.toggle('on',i===a));
+   if(a>=0){const p=ps[a],c=$('ly');c.scrollTo({top:p.offsetTop-c.clientHeight/2+p.clientHeight/2,behavior:'smooth'})}}}}
+function icons(){const ic=playing?IC.pause:IC.play;$('mp').innerHTML=ic;$('bp').innerHTML=ic;$('pv').innerHTML=IC.prev;$('nx').innerHTML=IC.next;heart()}
+function heart(){const t=tracks[cur];$('bh').innerHTML=IC.heart;$('bh').classList.toggle('on',!!t&&liked.has(t.id))}
+function paintLy(){
+ const t=tracks[cur],c=$('ly');act=-1;lp=parse(t.lrc);
+ c.classList.toggle('plain',!!lp&&!lp.synced);
+ if(lp)c.innerHTML=lp.L.map(l=>`<p data-t="${lp.synced?l[0]:''}">${esc(l[1])}</p>`).join('')+'<div class="pad"></div>';
+ else if(busy.has(t.id))c.innerHTML='<div class="msg">Lyrics qidirilmoqda…</div>';
+ else c.innerHTML='<div class="msg">Lyrics topilmadi.<br><button class="btn" id="manual">Qo’lda kiritish</button></div>';
+ c.scrollTop=0;ui()}
+function paint(){const t=tracks[cur];['mini','np'].forEach(k=>$(k).style.setProperty('--h',t.h));$('mini').classList.add('on');
+ const mc=$('mc');mc.style.cssText=covStyle(t);
+ $('mt').textContent=$('bt').textContent=t.t||'Nomsiz';$('ma').textContent=$('ba').textContent=t.a||'—';
+ $('mp').style.setProperty('--h',t.h);$('bp').style.setProperty('--h',t.h);
+ document.querySelectorAll('.row').forEach(r=>r.classList.toggle('cur',+r.dataset.i===cur));
+ paintLy();icons()}
+
+const row=i=>{const t=tracks[i];return `<div class="row glass${i===cur?' cur':''}" data-i="${i}" style="--h:${t.h}" tabindex="0">${cov(t,'sm')}<div class="meta"><b>${esc(t.t)}</b><small>${esc(t.a||'Ijrochi yo’q')}</small></div><button class="hrt${liked.has(t.id)?' on':''}" data-like="${t.id}" aria-label="Saqlash">${IC.heart}</button><button class="hrt" data-del="${i}" aria-label="O’chirish">${IC.trash}</button></div>`};
 function lists(){
-const q=$('q').value.trim().toLowerCase(),r=T.map((t,i)=>i).filter(i=>(T[i].t+' '+T[i].a).toLowerCase().includes(q));
-$('res').innerHTML=r.length?r.map(row).join(''):'<div class="empty glass">Hech narsa topilmadi. Boshqa nom yozib ko’ring.</div>';
-const l=[...liked];$('liked').innerHTML=l.length?l.map(row).join(''):'<div class="empty glass">Hali hech narsa yo’q. Qo’shiqdagi yurakchani bosing, u shu yerda paydo bo’ladi.</div>'}
-function home(){const t=T[0];
-$('hero').innerHTML=`${cov(t,'')}<div><h2>${t.t}</h2><p>${t.a} · bugun uchun tanlov</p><button class="pbtn clay" id="hp" aria-label="Ijro etish" style="--h:${t.h}"></button></div>`;
-$('hero').querySelector('.cover').style.setProperty('--h',t.h);
-$('grid').innerHTML=T.map((t,i)=>`<button class="card glass" data-i="${i}" style="--h:${t.h}">${cov(t,'')}<b>${t.t}</b><small>${t.a}</small></button>`).join('');
-$('hp').onclick=()=>cur===0?toggle():load(0)}
-const h=new Date().getHours();$('hi').textContent=h<5?'Xayrli tun':h<12?'Xayrli tong':h<18?'Xayrli kun':'Xayrli kech';
+ const q=$('q').value.trim().toLowerCase(),all=tracks.map((t,i)=>i);
+ $('grid').innerHTML=all.length?all.map(i=>{const t=tracks[i];return `<button class="card glass" data-i="${i}" style="--h:${t.h}">${cov(t,'')}<b>${esc(t.t)}</b><small>${esc(t.a||'')}</small></button>`}).join(''):'<div class="empty glass" style="grid-column:1/-1">Playlist bo’sh. Yuqoriga YouTube havolasini yopishtiring.</div>';
+ const r=all.filter(i=>(tracks[i].t+' '+tracks[i].a).toLowerCase().includes(q));
+ $('res').innerHTML=r.length?r.map(row).join(''):'<div class="empty glass">Hech narsa topilmadi.</div>';
+ const l=all.filter(i=>liked.has(tracks[i].id));
+ $('liked').innerHTML=l.length?l.map(row).join(''):'<div class="empty glass">Hali hech narsa yo’q. Qo’shiqdagi yurakchani bosing, u shu yerda paydo bo’ladi.</div>'}
 
+/* ---------- qo’shish va o’chirish ---------- */
+async function add(){
+ const inp=$('url'),id=vid(inp.value);
+ if(!id){toast('Havola noto’g’ri. YouTube havolasini yopishtiring.');return}
+ const ex=tracks.findIndex(t=>t.id===id);if(ex>=0){inp.value='';load(ex);return}
+ $('addb').disabled=true;let title='',author='';
+ try{const r=await fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent('https://www.youtube.com/watch?v='+id));if(r.ok){const j=await r.json();title=j.title;author=j.author_name}}catch(e){}
+ const g=title?guess(title,author):{t:'Nomsiz qo’shiq',a:''};
+ const t={id,t:g.t,a:g.a,h:hue(id),lrc:'',ls:''};
+ tracks.push(t);save();inp.value='';$('addb').disabled=false;lists();
+ toast(title?'Qo’shildi. Lyrics qidirilmoqda…':'Nom topilmadi. Pleyerdagi ✎ orqali o’zingiz yozing.');
+ if(title)fetchLy(t)}
+function del(i){const t=tracks[i];tracks.splice(i,1);liked.delete(t.id);
+ if(i===cur){cur=-1;playing=false;if(ytReady)yt.stopVideo();$('mini').classList.remove('on');$('np').classList.remove('on')}else if(i<cur)cur--;
+ save();place();lists();icons()}
+
+/* ---------- lyrics tahrirlash ---------- */
+function openEd(){if(cur<0)return;const t=tracks[cur];$('et').value=t.t;$('ea').value=t.a;$('el').value=t.lrc||'';$('est').textContent='';$('ed').hidden=false}
+$('edb').onclick=openEd;$('ecancel').onclick=()=>$('ed').hidden=true;
+$('efind').onclick=async()=>{const st=$('est');st.textContent='Qidirilmoqda…';let r=null;try{r=await findLy($('et').value.trim(),$('ea').value.trim(),dur)}catch(e){}
+ if(r){$('el').value=r;st.textContent='Topildi. «Saqlash»ni bosing.'}else st.textContent='Topilmadi. Nom va ijrochini tekshiring yoki matnni o’zingiz kiriting.'};
+$('esave').onclick=()=>{const t=tracks[cur];t.t=$('et').value.trim()||t.t;t.a=$('ea').value.trim();t.lrc=$('el').value;t.ls=t.lrc.trim()?'ok':'none';save();paint();lists();$('ed').hidden=true};
+
+/* ---------- hodisalar ---------- */
+const h=new Date().getHours();$('hi').textContent=h<5?'Xayrli tun':h<12?'Xayrli tong':h<18?'Xayrli kun':'Xayrli kech';
 document.addEventListener('click',e=>{
-const lk=e.target.closest('[data-like]');if(lk){e.stopPropagation();const i=+lk.dataset.like;liked.has(i)?liked.delete(i):liked.add(i);lists();heart();return}
-const r=e.target.closest('[data-i]');if(r&&!r.classList.contains('nav')){const i=+r.dataset.i;i===cur?toggle():load(i);return}
-const n=e.target.closest('.nav');if(n){document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('on',x.dataset.v===n.dataset.v));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+n.dataset.v));lists()}});
-document.addEventListener('keydown',e=>{if((e.key==='Enter')&&e.target.matches('.row,.mini')){e.target.click()}});
+ if(e.target.closest('#manual')){openEd();return}
+ const dl=e.target.closest('[data-del]');if(dl){e.stopPropagation();del(+dl.dataset.del);return}
+ const lk=e.target.closest('[data-like]');if(lk){e.stopPropagation();const id=lk.dataset.like;liked.has(id)?liked.delete(id):liked.add(id);save();lists();heart();return}
+ const r=e.target.closest('[data-i]');if(r&&!r.classList.contains('nav')){const i=+r.dataset.i;i===cur?toggle():load(i);return}
+ const n=e.target.closest('.nav');if(n){document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('on',x.dataset.v===n.dataset.v));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+n.dataset.v));lists()}});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('.row,.mini'))e.target.click()});
+$('url').addEventListener('keydown',e=>{if(e.key==='Enter')add()});
+$('addb').onclick=add;
 $('q').oninput=lists;
 $('mp').onclick=e=>{e.stopPropagation();toggle()};
 $('mini').onclick=()=>{if(cur>=0)$('np').classList.add('on')};
-$('close').onclick=()=>$('np').classList.remove('on');
+$('close').onclick=()=>{$('np').classList.remove('on');place()};
 $('bp').onclick=toggle;$('pv').onclick=()=>go(-1);$('nx').onclick=()=>go(1);
-$('bh').onclick=()=>{liked.has(cur)?liked.delete(cur):liked.add(cur);lists();heart()};
-$('seek').oninput=e=>{pos=+e.target.value;lastStep=-1;act=-1;ui()};
-$('ly').onclick=e=>{const p=e.target.closest('p');if(p){pos=+p.dataset.t;act=-1;ui()}};
+$('bh').onclick=()=>{const t=tracks[cur];if(!t)return;liked.has(t.id)?liked.delete(t.id):liked.add(t.id);save();lists();heart()};
+const sk=$('seek');sk.addEventListener('pointerdown',()=>dragging=true);
+['pointerup','pointercancel'].forEach(v=>sk.addEventListener(v,()=>dragging=false));
+sk.oninput=e=>{pos=+e.target.value;$('tc').textContent=fmt(pos);act=-1;ui()};
+sk.onchange=e=>{dragging=false;if(ytReady)yt.seekTo(+e.target.value,true)};
+$('ly').onclick=e=>{const p=e.target.closest('p');if(p&&p.dataset.t!==''&&ytReady){pos=+p.dataset.t;yt.seekTo(pos,true);act=-1;ui()}};
 $('th').onclick=()=>{const d=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;root.dataset.theme=d?'light':'dark'};
-home();lists();icons();
+restore();lists();
 </script>
 </body>
 </html>
